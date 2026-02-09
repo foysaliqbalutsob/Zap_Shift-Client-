@@ -11,7 +11,20 @@
   --color-secondary: teal;
 }
 
+/* স্লাইডারের উইডথ সেট করা */
+.mySwiper {
+  width: 100%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
 
+/* প্রতিটি কার্ডের সাইজ নির্দিষ্ট করা */
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 350px; /* এই উইডথটি প্রথম টাইপের লুক আনতে সাহায্য করবে */
+  height: auto;
+}
 
 html {
   color-scheme: light dark;

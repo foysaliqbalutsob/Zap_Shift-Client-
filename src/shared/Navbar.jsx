@@ -2,14 +2,19 @@ import React from "react";
 import ThemeToggle from "../components/ThemeToggle";
 import Logo from "../components/Logo";
 import { NavLink } from "react-router";
+import NavLinks from "../components/NavLinks";
 
 const Navbar = () => {
-  const links = <>
-<li><NavLink className={"bg-s"} to={"/"}>services</NavLink></li>
-  <li><NavLink className={"bg-secondary"} to={"/"}>services</NavLink></li>
-  <li><NavLink to={"/"}>services</NavLink></li>
+  const links = (
+    <NavLinks>
+      <NavLink to="/">Services</NavLink>
+      <NavLink to="/coverage">Coverage</NavLink>
+      <NavLink to="/about">About Us</NavLink>
+      <NavLink to="/pricing">Pricing</NavLink>
+      <NavLink to="/rider">Be a Rider</NavLink>
+    </NavLinks>
+  );
 
-  </>
 
   return (
     <div className="navbar bg-base-100 shadow-sm">
