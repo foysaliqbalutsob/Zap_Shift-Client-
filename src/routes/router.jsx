@@ -3,6 +3,10 @@ import RootLayout from "../layout/RootLayout";
 import Home from "../pages/Home/Home";
 import Coverage from "../pages/Coverage/Coverage";
 import AuthLayout from "../layout/AuthLayOut";
+import Login from "../pages/AuthRelatedPages/login";
+import Register from "../pages/AuthRelatedPages/Register";
+import ForgetPassWord from "../pages/AuthRelatedPages/ForgetPassWord";
+import ResetPassword from "../pages/AuthRelatedPages/ResetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -37,10 +41,22 @@ export const router = createBrowserRouter([
       },
       {
         path:"/login",
+        element:<Login></Login>
       },
       {
         path:"/register",
+        element:<Register></Register>
       },
+      {
+        path:"/login/forgot-password",
+        element:<ForgetPassWord></ForgetPassWord>
+      },
+      {
+        path:"/reset",
+        element:<ResetPassword></ResetPassword>
+      },
+      
+
       
       
 
