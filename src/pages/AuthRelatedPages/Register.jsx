@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { FaEye, FaEyeSlash, FaUser, FaEnvelope } from "react-icons/fa";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
+import axios from "axios";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+    const location =useLocation()
+
 
   const {
     register,
@@ -16,34 +19,78 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
-  const {registerUser,
-        signInUser
+  const {registerUser,updateUserProfile
+      
 } = useAuth();
 
-  const handleRegistration = async (data) => {
+const handleRegistration = async (data) => {
     setLoading(true);
-    console.log("Registration Data:", data);
-    registerUser(data.email, data.password).then(result =>{
-      console.log(result.user)
-    })
-    .catch(error =>{
-      console.log(error)
-    })
+    
+    
+    const imageFile = data.photoFile[0];
+    
+    
+    const formData = new FormData();
+    formData.append("image", imageFile);
 
-    // ফেক ডিলে (Fake Delay)
-    setTimeout(() => {
+    try {
+      
+      import.meta.env.VITE_image_host;
+      const res = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`,
+        formData
+      );
+
+      if (res.data.success) {
+        const photoURL = res.data.data.display_url; 
+
+       
+        registerUser(data.email, data.password)
+          .then(async (result) => {
+            console.log("User Created:", result.user);
+
+            await updateUserProfile(data.name, photoURL);
+
+            setLoading(false);
+            alert("Registration Successful with Profile Photo!");
+            navigate(location.state || "/");
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.log("Firebase Error:", error.message);
+          });
+      }
+    } catch (error) {
       setLoading(false);
-      alert("Registration Successful!");
-      // রেজিস্ট্রেশন সফল হলে লগইন পেজে পাঠিয়ে দেওয়া
-      // navigate("/login"); 
-    }, 2000);
+      console.log("ImgBB Error:", error.message);
+      alert("Image upload failed, please try again.");
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 px-4 py-10">
       <div className="card w-full max-w-md shadow-2xl bg-base-100">
         <form onSubmit={handleSubmit(handleRegistration)} className="card-body p-8">
-          <h2 className="text-3xl font-bold text-center text-primary mb-6">Create Account</h2>
+          <h2 className="text-3xl font-bold text-center  text-[#CAEB66] mb-6">Create Account</h2>
+          <p>Welcome to zap shift</p>
+
+
+          
+{/* File Upload Input Field */}
+<div className="form-control w-full">
+  <label className="label">
+    <span className="label-text font-bold text-base-content/80">Upload Profile Photo</span>
+  </label>
+  <input
+    type="file"
+    accept="image/*" 
+    className={`file-input file-input-bordered file-input-primary w-full ${errors.photoFile ? "file-input-error" : ""}`}
+    {...register("photoFile", { required: "Please upload a photo" })}
+  />
+  {errors.photoFile && (
+    <span className="text-error text-xs mt-1 ml-1">{errors.photoFile.message}</span>
+  )}
+</div>
 
           {/* Name Field */}
           <div className="form-control w-full">
@@ -120,7 +167,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full text-white font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-transform"
+              className="btn btn-primary bg-[#CAEB66] w-full text-white border-none font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-transform"
             >
               {loading ? (
                 <>
